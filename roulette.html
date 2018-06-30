@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>ルーレット</title>
+        <link rel="stylesheet" href="roulette.css">
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script>
+            var interval_id;
+            var start_flag = false;
+            var rand;
+            var num;
+            var max_num = 16;
+            var num_list = [];
+            
+            function box_make() {
+                $('#box').empty();
+                num_list = [];
+                for(var i = 0; i < max_num; i++) {
+                    $('#box').append('<div>' + (i + 1) + '</div>');
+                    num_list.push(i);
+                }
+            }
+            
+            function roulette_start() {
+                if (start_flag === false && num_list.length > 0) {
+                    interval_id = setInterval(roulette, 100);
+                    start_flag = true;
+                }
+            }
+            
+            function roulette() {
+                $('#box div.stop').removeClass('stop').addClass('used');
+                $('#box div').removeClass('run');
+                rand = Math.floor(Math.random() * num_list.length );
+                num = num_list[rand];
+                $('#box div').eq(num).addClass('run');
+console.log('run', rand, num, num_list);        
+            }
+            
+            function roulette_stop() {
+                if(start_flag === true){
+                    clearInterval(interval_id);
+                    $('#box div').eq(num).removeClass('run').addClass('stop');
+                    num_list.splice(rand, 1);
+                    start_flag = false;
+                }
+console.log('stop', rand, num, num_list);  
+            }
+            
+            function roulette_reset() {
+                roulette_stop();
+                $('#box div').removeClass('run stop used');
+                start_flag = false;
+                box_make();
+            }
+            
+            $(function(){
+                $('#start').click(roulette_start);
+                $('#stop').click(roulette_stop);
+                $('#reset').click(roulette_reset);
+                box_make();
+            });
+            
+        </script>
+    </head>
+    <body>
+        <p>Roulette 16</p>
+        <div id="box"></div>
+        <div id="button">
+            <button id='start'>スタート</button>
+            <button id='stop'>ストップ</button>
+            <button id='reset'>リセット</button>
+        </div>
+    </body>
+</html>
